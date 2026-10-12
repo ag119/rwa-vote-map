@@ -586,7 +586,7 @@ function renderList() {
 }
 function renderCands() {
   // keep an open edit form intact while someone else's change arrives
-  if (S.edit && S.cands[S.edit] && $("cands").contains(document.activeElement)) return;
+  if (S.edit && S.cands[S.edit] && document.activeElement?.closest?.(".candedit")) return;
   if (S.edit && !S.cands[S.edit]) S.edit = S.draft = null;
   const all = Object.entries(S.cands);
   $("candCount").textContent = all.length ? `${all.length} nominated` : "";
@@ -691,7 +691,9 @@ function saveNote() {
   if (nm && nm !== nameOf(S.sel)) store.setResident(S.sel, nm);
 }
 $("pNote").addEventListener("change", saveNote);
-$("cands").addEventListener("input", e => { const k = e.target.dataset?.k; if (k && S.draft) S.draft[k] = e.target.value; });
+const onDraft = e => { const k = e.target.dataset?.k; if (k && S.draft) S.draft[k] = e.target.value; };
+$("cands").addEventListener("input", onDraft);
+$("cands").addEventListener("change", onDraft);
 $("cands").addEventListener("keydown", e => {
   if (!S.edit) return;
   if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); document.querySelector(`[data-save="${CSS.escape(S.edit)}"]`)?.click(); }
